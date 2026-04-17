@@ -305,7 +305,7 @@ export const POSView: React.FC = () => {
             {cart.map(item => {
               const uniqueId = `${item.id}-${item.selectedSize}`;
               return (
-                  <div className="flex items-center gap-4 group hover:bg-slate-50 transition-colors p-4 rounded-3xl border border-transparent hover:border-slate-100">
+                  <div key={uniqueId} className="flex items-center gap-4 group hover:bg-slate-50 transition-colors p-4 rounded-3xl border border-transparent hover:border-slate-100">
                     <div className="w-12 h-12 rounded-2xl bg-white border border-slate-100 shrink-0 overflow-hidden shadow-sm">
                       <img src={item.images?.[0]} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                     </div>

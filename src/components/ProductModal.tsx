@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { X, Package, Tag, Layers, Database, Image as ImageIcon, Upload } from 'lucide-react';
-import { db, type Product } from '../lib/db';
+import { X, Package, Tag, Layers, Database, Image as ImageIcon, Upload, TrendingUp, Coins } from 'lucide-react';
+import { db, type Product, type ShopSettings } from '../lib/db';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn, formatCurrency } from '../lib/utils';
 
@@ -16,6 +16,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onS
     name: '',
     sku: '',
     category: 'Premier League',
+    buyPrice: 0,
     price: 0,
     stocks: { 'S': 0, 'M': 0, 'L': 0, 'XL': 0 },
     images: [],
@@ -23,30 +24,78 @@ export const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onS
   });
 
   const [displayPrice, setDisplayPrice] = useState('');
+  const [displayBuyPrice, setDisplayBuyPrice] = useState('');
+  const [shopSettings, setShopSettings] = useState<ShopSettings | null>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      db.settings.toCollection().first().then(setShopSettings);
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (productToEdit) {
       setFormData(productToEdit);
       setDisplayPrice(productToEdit.price.toString());
+      setDisplayBuyPrice(productToEdit.buyPrice?.toString() || '0');
     } else {
       setFormData({
         name: '',
         sku: '',
         category: 'Premier League',
+        buyPrice: 0,
         price: 0,
         stocks: { 'S': 0, 'M': 0, 'L': 0, 'XL': 0 },
         images: [],
         description: '',
       });
       setDisplayPrice('');
+      setDisplayBuyPrice('');
     }
   }, [productToEdit, isOpen]);
+
+  const calculateSellPrice = (buyPrice: number) => {
+    if (!shopSettings || !buyPrice) return buyPrice || 0;
+    let sellingPrice = 0;
+    
+    // Pastikan default ke percentage jika tidak terdefinisi
+    const marginType = shopSettings.marginType || 'percentage';
+    const marginValue = shopSettings.marginValue || 0;
+
+    if (marginType === 'percentage') {
+      // Rumus Markup % (Standard UMKM): Harga Jual = Harga Beli + (Harga Beli * %)
+      // Contoh: 200.000 + (200.000 * 30%) = 260.000
+      sellingPrice = buyPrice + (buyPrice * (marginValue / 100));
+    } else {
+      // Margin Nominal: Harga Jual = Harga Beli + Margin Rupiah
+      sellingPrice = buyPrice + marginValue;
+    }
+    
+    // Pembulatan ke atas ke 500 terdekat untuk kemudahan transaksi IDR cash
+    return Math.ceil(sellingPrice / 500) * 500;
+  };
 
   const generateSKU = (name: string, category: string) => {
     const prefix = category.substring(0, 3).toUpperCase();
     const namePart = name.substring(0, 3).toUpperCase();
     const random = Math.floor(1000 + Math.random() * 9000);
     return `${prefix}-${namePart}-${random}`;
+  };
+
+  const handleBuyPriceChange = (value: string) => {
+    const numericValue = value.replace(/\D/g, '');
+    const buyPrice = Number(numericValue);
+    setDisplayBuyPrice(numericValue);
+    
+    // Auto calculate sell price
+    const sellPrice = calculateSellPrice(buyPrice);
+    setDisplayPrice(sellPrice.toString());
+    
+    setFormData(prev => ({ 
+      ...prev, 
+      buyPrice,
+      price: sellPrice
+    }));
   };
 
   const handlePriceChange = (value: string) => {
@@ -180,7 +229,24 @@ export const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onS
           </div>
 
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1 italic">Harga Jersey (Rp)</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1 italic">Harga Beli (Modal)</label>
+            <div className="relative">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-1 text-slate-400 pointer-events-none pr-2 border-r border-slate-200">
+                <span className="text-[10px] font-black">Rp</span>
+              </div>
+              <input 
+                required
+                type="text" 
+                value={Number(displayBuyPrice).toLocaleString('id-ID')}
+                onChange={e => handleBuyPriceChange(e.target.value)}
+                placeholder="0"
+                className="w-full pl-14 pr-4 py-3 bg-slate-50 border-none rounded-xl text-sm font-bold focus:ring-2 focus:ring-emerald-500/20 transition-all text-emerald-600"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1 italic">Harga Jual (Otomatis)</label>
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-1 text-slate-400 pointer-events-none pr-2 border-r border-slate-200">
                 <span className="text-[10px] font-black">Rp</span>
@@ -190,10 +256,23 @@ export const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onS
                 type="text" 
                 value={Number(displayPrice).toLocaleString('id-ID')}
                 onChange={e => handlePriceChange(e.target.value)}
-                placeholder="cth: 150.000"
-                className="w-full pl-14 pr-4 py-3 bg-slate-50 border-none rounded-xl text-sm font-bold focus:ring-2 focus:ring-accent/20 transition-all"
+                placeholder="0"
+                className="w-full pl-14 pr-4 py-3 bg-blue-50 border-none rounded-xl text-sm font-bold focus:ring-2 focus:ring-blue-500/20 transition-all text-blue-600"
               />
+              <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                <TrendingUp className="w-4 h-4 text-blue-400" />
+              </div>
             </div>
+            {formData.buyPrice && formData.price && formData.price > formData.buyPrice ? (
+              <div className="px-1 flex items-center justify-between">
+                <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">
+                  Profit: {formatCurrency(formData.price - (formData.buyPrice || 0))}
+                </span>
+                <span className="text-[9px] font-black text-slate-400">
+                  Markup: {formData.buyPrice ? Math.round(((formData.price - formData.buyPrice) / formData.buyPrice) * 100) : 0}%
+                </span>
+              </div>
+            ) : null}
           </div>
 
           <div className="md:col-span-2 space-y-4">

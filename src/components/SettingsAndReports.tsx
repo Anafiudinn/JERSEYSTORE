@@ -9,7 +9,10 @@ import {
   Bell, 
   ShieldCheck,
   Globe,
-  Camera
+  Camera,
+  Percent,
+  TrendingUp,
+  Info
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -37,8 +40,15 @@ export const SettingsView: React.FC = () => {
   const saveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!settings) return;
-    await db.settings.put(settings);
-    alert('Settings saved successfully!');
+    
+    // Pastikan kita mengupdate record utama (ID 1)
+    const settingsToSave = { ...settings, id: 1 };
+    await db.settings.put(settingsToSave);
+    
+    // Update local state agar konsisten
+    setSettings(settingsToSave);
+    
+    alert('Pengaturan berhasil disimpan!');
   };
 
   if (loading) return <div>Loading...</div>;
@@ -49,16 +59,16 @@ export const SettingsView: React.FC = () => {
         <div className="p-10 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 bg-accent rounded-[24px] flex items-center justify-center text-white shadow-xl shadow-accent/20">
-              <Store className="w-8 h-8" />
+              <Info className="w-8 h-8" />
             </div>
             <div>
-              <h3 className="text-2xl font-black text-slate-900 tracking-tight">Profil Toko</h3>
-              <p className="text-sm font-semibold text-slate-500">Kustomisasi identitas UMKM Anda</p>
+              <h3 className="text-2xl font-black text-slate-900 tracking-tight">Profil Aplikasi</h3>
+              <p className="text-sm font-semibold text-slate-500">Informasi identitas aplikasi & sistem</p>
             </div>
           </div>
           <button onClick={saveSettings} className="flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-2xl font-black text-sm hover:scale-105 active:scale-95 transition-all shadow-xl shadow-slate-900/10">
             <Save className="w-4 h-4" />
-            Save Changes
+            Simpan Perubahan
           </button>
         </div>
 
@@ -117,6 +127,56 @@ export const SettingsView: React.FC = () => {
             </div>
           </div>
         </form>
+      </div>
+
+      <div className="bg-white rounded-[32px] border border-slate-200 overflow-hidden shadow-sm">
+        <div className="p-10 border-b border-slate-100 flex items-center justify-between bg-emerald-50/50">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 bg-emerald-500 rounded-[24px] flex items-center justify-center text-white shadow-xl shadow-emerald-500/20">
+              <TrendingUp className="w-8 h-8" />
+            </div>
+            <div>
+              <h3 className="text-2xl font-black text-slate-900 tracking-tight">Margin Profit</h3>
+              <p className="text-sm font-semibold text-slate-500">Atur standar keuntungan otomatis</p>
+            </div>
+          </div>
+          <button onClick={saveSettings} className="flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-sm hover:scale-105 active:scale-95 transition-all shadow-xl shadow-emerald-600/10">
+            <Save className="w-4 h-4" />
+            Simpan Margin
+          </button>
+        </div>
+
+        <div className="p-10 grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-2">
+            <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-1">Tipe Margin</label>
+            <div className="relative">
+              <Percent className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+              <select 
+                value={settings?.marginType || 'percentage'}
+                onChange={e => setSettings(s => s ? {...s, marginType: e.target.value as 'percentage' | 'nominal'} : null)}
+                className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-emerald-500/20 transition-all outline-none"
+              >
+                <option value="percentage">Persentase (%)</option>
+                <option value="nominal">Nominal (Rp)</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-1">
+              Nilai Margin {settings?.marginType === 'percentage' ? '(%)' : '(Rp)'}
+            </label>
+            <div className="relative">
+              <TrendingUp className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+              <input 
+                type="number" 
+                value={settings?.marginValue || 0}
+                onChange={e => setSettings(s => s ? {...s, marginValue: Number(e.target.value)} : null)}
+                className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-emerald-500/20 transition-all font-mono"
+              />
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

@@ -136,7 +136,8 @@ export const ProductsView: React.FC = () => {
               <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest bg-white">SKU</th>
               <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest bg-white text-center">Stok Global</th>
               <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest bg-white">Status</th>
-              <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest bg-white text-right">Harga</th>
+              <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest bg-white text-right">Harga Beli</th>
+              <th className="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest bg-white text-right">Harga Jual</th>
               <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest bg-white text-right">Aksi</th>
             </tr>
           </thead>
@@ -175,6 +176,9 @@ export const ProductsView: React.FC = () => {
                           {totalStock > 10 ? 'Ready' : totalStock > 0 ? 'Menipis' : 'Habis'}
                        </span>
                     </div>
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <span className="text-xs font-bold text-slate-400 tracking-tight">{formatCurrency(product.buyPrice || 0)}</span>
                   </td>
                   <td className="px-6 py-4 text-right">
                     <span className="text-sm font-black text-blue-600 tracking-tight">{formatCurrency(product.price)}</span>

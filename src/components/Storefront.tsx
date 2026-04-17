@@ -223,9 +223,67 @@ export const Storefront: React.FC<StorefrontProps> = ({ onAdminLogin }) => {
                 </motion.div>
               </div>
 
-              {/* Decorative Element */}
-              <div className="absolute right-0 bottom-0 select-none pointer-events-none hidden lg:block translate-y-1/4">
-                <h2 className="text-[25vw] font-black text-slate-100 uppercase tracking-tighter leading-none">JS2024</h2>
+              {/* Decorative Floating Jersey & Background Elements */}
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 lg:w-1/2 h-full hidden lg:flex items-center justify-center pointer-events-none pr-12">
+                <div className="relative w-full h-full flex items-center justify-center">
+                  {/* Floating Jersey Card */}
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.8, rotate: -15, y: 50 }}
+                    animate={{ 
+                      opacity: 1, 
+                      scale: 1, 
+                      rotate: -5,
+                      y: [0, -20, 0] 
+                    }}
+                    transition={{ 
+                      duration: 4, 
+                      repeat: Infinity, 
+                      repeatType: "reverse",
+                      opacity: { duration: 1.2 },
+                      scale: { duration: 1.2 },
+                      rotate: { duration: 1.2 }
+                    }}
+                    className="relative z-30 w-full max-w-lg aspect-[3/4] rounded-[3rem] overflow-hidden shadow-[0_50px_100px_-20px_rgba(37,99,235,0.25)] border-4 border-white/50 backdrop-blur-sm"
+                  >
+                    <img 
+                      src="https://images.unsplash.com/photo-1544698310-74ea9d1c8258?auto=format&fit=crop&q=80&w=1200" 
+                      className="w-full h-full object-cover" 
+                      alt="Premium Jersey Display"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-blue-600/40 to-transparent" />
+                    <div className="absolute bottom-10 left-10 text-white space-y-2">
+                       <span className="text-[10px] font-black uppercase tracking-[0.4em] opacity-80">Special Edition</span>
+                       <h3 className="text-3xl font-black uppercase tracking-tighter">Pro Elite Series</h3>
+                    </div>
+                  </motion.div>
+
+                  {/* Animated Background Text */}
+                  <motion.div 
+                    animate={{ x: [0, -30, 0], opacity: [0.05, 0.1, 0.05] }}
+                    transition={{ duration: 10, repeat: Infinity }}
+                    className="absolute -right-20 bottom-10 select-none"
+                  >
+                    <h2 className="text-[20vw] font-black text-blue-600 uppercase tracking-tighter leading-none">2024</h2>
+                  </motion.div>
+
+                  {/* Floating Particles/Shapes */}
+                  <motion.div 
+                    animate={{ 
+                      y: [0, 40, 0],
+                      rotate: [0, 180, 360] 
+                    }}
+                    transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                    className="absolute top-20 right-20 w-32 h-32 border-2 border-blue-600/10 rounded-full"
+                  />
+                  <motion.div 
+                    animate={{ 
+                      y: [0, -60, 0],
+                      x: [0, 30, 0]
+                    }}
+                    transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute bottom-20 left-10 w-24 h-24 bg-blue-600/5 rounded-3xl rotate-45"
+                  />
+                </div>
               </div>
             </section>
 
@@ -267,9 +325,10 @@ export const Storefront: React.FC<StorefrontProps> = ({ onAdminLogin }) => {
                       key={product.id}
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
+                      whileHover={{ scale: 1.02, rotateY: 5, perspective: 1000 }}
                       viewport={{ once: true }}
-                      transition={{ delay: i * 0.1 }}
-                      className="group cursor-pointer bg-white rounded-[2rem] p-4 shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
+                      transition={{ delay: i * 0.1, type: "spring", stiffness: 300 }}
+                      className="group cursor-pointer bg-white rounded-[2rem] p-4 shadow-sm hover:shadow-2xl transition-all duration-500 border border-slate-50"
                       onClick={() => {
                         setSelectedProduct(product);
                         setSelectedSize('');
@@ -421,6 +480,30 @@ export const Storefront: React.FC<StorefrontProps> = ({ onAdminLogin }) => {
                 <div className="text-center space-y-4">
                    <h3 className="text-3xl font-black uppercase tracking-tighter">Kemitraan Strategis</h3>
                    <p className="text-slate-400 font-medium max-w-2xl mx-auto uppercase text-[10px] tracking-[0.2em]">Bekerja sama dengan brand & komunitas global sejak hari pertama</p>
+                </div>
+                
+                {/* Animated Partner Grid */}
+                <div className="flex flex-wrap justify-center gap-12 opacity-30 grayscale hover:grayscale-0 transition-all duration-700">
+                  <motion.div 
+                    animate={{ scale: [1, 1.1, 1] }} 
+                    transition={{ duration: 3, repeat: Infinity }}
+                    className="w-32 h-12 bg-slate-200 rounded-lg flex items-center justify-center font-black text-slate-400"
+                  >ADIDAS</motion.div>
+                  <motion.div 
+                    animate={{ scale: [1, 1.1, 1] }} 
+                    transition={{ duration: 3, repeat: Infinity, delay: 0.5 }}
+                    className="w-32 h-12 bg-slate-200 rounded-lg flex items-center justify-center font-black text-slate-400"
+                  >NIKE</motion.div>
+                  <motion.div 
+                    animate={{ scale: [1, 1.1, 1] }} 
+                    transition={{ duration: 3, repeat: Infinity, delay: 1 }}
+                    className="w-32 h-12 bg-slate-200 rounded-lg flex items-center justify-center font-black text-slate-400"
+                  >PUMA</motion.div>
+                  <motion.div 
+                    animate={{ scale: [1, 1.1, 1] }} 
+                    transition={{ duration: 3, repeat: Infinity, delay: 1.5 }}
+                    className="w-32 h-12 bg-slate-200 rounded-lg flex items-center justify-center font-black text-slate-400"
+                  >UMBRO</motion.div>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

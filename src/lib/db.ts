@@ -4,6 +4,7 @@ export interface Product {
   id?: number;
   name: string;
   category: string;
+  buyPrice: number;
   price: number;
   stocks: Record<string, number>;
   images: string[];
@@ -41,6 +42,8 @@ export interface ShopSettings {
   address: string;
   phone: string;
   currency: string;
+  marginType: 'percentage' | 'nominal';
+  marginValue: number;
 }
 
 export class AppDatabase extends Dexie {
@@ -70,6 +73,7 @@ export async function seedDatabase() {
       { 
         name: 'Manchester United Home 24/25', 
         category: 'Premier League', 
+        buyPrice: 600000,
         price: 850000, 
         stocks: { 'S': 5, 'M': 10, 'L': 5, 'XL': 5 }, 
         images: ['https://images.footballfanatics.com/manchester-united/manchester-united-adidas-home-shirt-2024-25-kids_ss5_p-201089635+u-63z50wshf1hzhul0k6sc+v-7c703cc8310d481dae178553229babb2.jpg?_hv=2&w=900'], 
@@ -79,6 +83,7 @@ export async function seedDatabase() {
       { 
         name: 'Real Madrid Home 24/25', 
         category: 'La Liga', 
+        buyPrice: 700000,
         price: 950000, 
         stocks: { 'M': 5, 'L': 5, 'XL': 5, 'XXL': 3 }, 
         images: ['https://images.footballfanatics.com/real-madrid/real-madrid-adidas-home-shirt-2024-25_ss5_p-201079316+u-i0f3p9j1d8i9w8v8i8j8+v-da6364020f014f3faf66050604f1df91.jpg?_hv=2&w=900'], 
@@ -88,6 +93,7 @@ export async function seedDatabase() {
       { 
         name: 'Indonesia National Team Home 2024', 
         category: 'National', 
+        buyPrice: 500000,
         price: 750000, 
         stocks: { 'S': 10, 'M': 20, 'L': 15, 'XL': 10, 'XXL': 5 }, 
         images: ['https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=800'], 
@@ -97,6 +103,7 @@ export async function seedDatabase() {
       { 
         name: 'Liverpool FC Home 24/25', 
         category: 'Premier League', 
+        buyPrice: 600000,
         price: 850000, 
         stocks: { 'S': 4, 'M': 4, 'L': 4 }, 
         images: ['https://images.footballfanatics.com/liverpool/liverpool-nike-home-stadium-shirt-2024-25_ss5_p-201089531+u-a75d691bc67e42d8815f+v-00302bda682243d68846c2bceb812f8a.jpg?_hv=2&w=900'], 
@@ -106,6 +113,7 @@ export async function seedDatabase() {
       { 
         name: 'Juventus FC Home 24/25', 
         category: 'Serie A', 
+        buyPrice: 650000,
         price: 890000, 
         stocks: { 'S': 8, 'M': 12, 'L': 6 }, 
         images: ['https://images.footballfanatics.com/juventus/juventus-adidas-home-shirt-2024-25_ss5_p-201089600+u-a75d691bc67e42d8815f+v-00302bda682243d68846c2bceb812f8a.jpg?_hv=2&w=900'], 
@@ -115,6 +123,7 @@ export async function seedDatabase() {
       { 
         name: 'AC Milan Home 24/25', 
         category: 'Serie A', 
+        buyPrice: 620000,
         price: 870000, 
         stocks: { 'M': 15, 'L': 10, 'XL': 5 }, 
         images: ['https://images.footballfanatics.com/ac-milan/ac-milan-puma-home-shirt-2024-25_ss5_p-201089300+u-a75d691bc67e42d8815f+v-00302bda682243d68846c2bceb812f8a.jpg?_hv=2&w=900'], 
@@ -124,6 +133,7 @@ export async function seedDatabase() {
       { 
         name: 'Paris Saint-Germain Home 24/25', 
         category: 'Ligue 1', 
+        buyPrice: 680000,
         price: 920000, 
         stocks: { 'S': 5, 'M': 10, 'L': 10 }, 
         images: ['https://images.footballfanatics.com/psg/psg-nike-home-stadium-shirt-2024-25_ss5_p-201089400+u-a75d691bc67e42d8815f+v-00302bda682243d68846c2bceb812f8a.jpg?_hv=2&w=900'], 
@@ -133,6 +143,7 @@ export async function seedDatabase() {
       { 
         name: 'Bayern Munich Home 24/25', 
         category: 'Bundesliga', 
+        buyPrice: 630000,
         price: 880000, 
         stocks: { 'L': 20, 'XL': 15 }, 
         images: ['https://images.footballfanatics.com/bayern-munich/bayern-munich-adidas-home-shirt-2024-25_ss5_p-201089500+u-a75d691bc67e42d8815f+v-00302bda682243d68846c2bceb812f8a.jpg?_hv=2&w=900'], 
@@ -145,7 +156,9 @@ export async function seedDatabase() {
       storeName: 'JerseySphere UMKM',
       address: 'Jl. Sepak Bola No. 10, Jakarta',
       phone: '0812-3456-7890',
-      currency: 'IDR'
+      currency: 'IDR',
+      marginType: 'percentage',
+      marginValue: 25
     });
 
     await db.logs.add({
