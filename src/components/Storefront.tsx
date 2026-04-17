@@ -94,84 +94,124 @@ export const Storefront: React.FC<StorefrontProps> = ({ onAdminLogin }) => {
   const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
   return (
-    <div className="min-h-screen bg-white font-sans text-black selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-white font-sans text-black selection:bg-blue-600 selection:text-white overflow-x-hidden">
       {/* 1. Navbar Pro */}
       <nav className={cn(
-        "fixed top-0 inset-x-0 z-[100] transition-all duration-500 px-6 md:px-12 py-6 flex items-center justify-between",
+        "fixed top-0 inset-x-0 z-[100] transition-all duration-500 px-4 md:px-12 py-4 md:py-6 flex items-center justify-between",
         (isScrolled || viewMode === 'catalog') ? "bg-white/90 backdrop-blur-xl border-b border-slate-100 py-4 shadow-sm" : "bg-transparent"
       )}>
-        {/* Logo Kiri */}
-        <div 
-          onClick={() => { setViewMode('home'); window.scrollTo(0,0); }}
-          className="flex items-center gap-2 group cursor-pointer"
-        >
-          <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-600/20 group-hover:rotate-12 transition-transform">
-            <ShoppingBag className="w-6 h-6" />
+        <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
+          {/* Logo Kiri */}
+          <div 
+            onClick={() => { setViewMode('home'); window.scrollTo(0,0); setIsMobileMenuOpen(false); }}
+            className="flex items-center gap-2 group cursor-pointer"
+          >
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-blue-600 rounded-lg md:rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-600/20 group-hover:rotate-12 transition-transform">
+              <ShoppingBag className="w-5 h-5 md:w-6 md:h-6" />
+            </div>
+            <span className="text-lg md:text-xl font-black tracking-tighter uppercase italic">JerseySphere</span>
           </div>
-          <span className="text-xl font-black tracking-tighter uppercase italic">JerseySphere</span>
-        </div>
 
-        {/* Menu Tengah */}
-        <div className="hidden lg:flex items-center gap-10">
-          {[
-            { name: 'Beranda', mode: 'home' },
-            { name: 'Katalog', mode: 'catalog' },
-            { name: 'Tentang Kami', mode: 'about' }
-          ].map((item) => (
+          {/* Menu Tengah - Desktop Only */}
+          <div className="hidden lg:flex items-center gap-10">
+            {[
+              { name: 'Beranda', mode: 'home' },
+              { name: 'Katalog', mode: 'catalog' },
+              { name: 'Tentang Kami', mode: 'about' }
+            ].map((item) => (
+              <button 
+                key={item.name} 
+                onClick={() => {
+                  setViewMode(item.mode as any);
+                  window.scrollTo(0, 0);
+                }}
+                className={cn(
+                  "text-[11px] font-black uppercase tracking-[0.2em] transition-colors relative group",
+                  (viewMode === item.mode) ? "text-blue-600" : "text-slate-500 hover:text-blue-600"
+                )}
+              >
+                {item.name}
+                <span className={cn(
+                  "absolute -bottom-1 left-0 h-0.5 bg-blue-600 transition-all group-hover:w-full",
+                  (viewMode === item.mode) ? "w-full" : "w-0"
+                )} />
+              </button>
+            ))}
+          </div>
+
+          {/* Ikon Kanan */}
+          <div className="flex items-center gap-2 md:gap-6">
             <button 
-              key={item.name} 
-              onClick={() => {
-                setViewMode(item.mode as any);
-                window.scrollTo(0, 0);
-              }}
-              className={cn(
-                "text-[11px] font-black uppercase tracking-[0.2em] transition-colors relative group",
-                (viewMode === item.mode) ? "text-blue-600" : "text-slate-500 hover:text-blue-600"
-              )}
+              onClick={() => { setViewMode('catalog'); window.scrollTo(0,0); }}
+              className="p-2 text-slate-900 hover:text-blue-600 transition-colors active:scale-90"
             >
-              {item.name}
-              <span className={cn(
-                "absolute -bottom-1 left-0 h-0.5 bg-blue-600 transition-all group-hover:w-full",
-                (viewMode === item.mode) ? "w-full" : "w-0"
-              )} />
+              <Search className="w-5 h-5" />
             </button>
-          ))}
+            <button 
+              onClick={() => setIsCartOpen(true)}
+              className="p-2 text-slate-900 hover:text-blue-600 transition-colors relative active:scale-90 group"
+            >
+              <ShoppingBasket className="w-5 h-5" />
+              <span className={cn(
+                "absolute top-1 right-1 w-3.5 h-3.5 md:w-4 md:h-4 bg-blue-600 text-white text-[8px] md:text-[9px] font-black rounded-full flex items-center justify-center transition-transform",
+                cart.length > 0 ? "scale-100" : "scale-0"
+              )}>
+                {cart.reduce((a, b) => a + b.quantity, 0)}
+              </span>
+            </button>
+            <button 
+              onClick={onAdminLogin}
+              className="hidden sm:block p-2 text-slate-900 hover:text-blue-600 transition-colors active:scale-90"
+              title="Kelola Inventori"
+            >
+              <User className="w-5 h-5" />
+            </button>
+            <button 
+              className="lg:hidden p-2 text-slate-900 active:scale-90"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
 
-        {/* Ikon Kanan */}
-        <div className="flex items-center gap-6">
-          <button 
-            onClick={() => { setViewMode('catalog'); window.scrollTo(0,0); }}
-            className="p-2 text-slate-900 hover:text-blue-600 transition-colors active:scale-90"
-          >
-            <Search className="w-5 h-5" />
-          </button>
-          <button 
-            onClick={() => setIsCartOpen(true)}
-            className="p-2 text-slate-900 hover:text-blue-600 transition-colors relative active:scale-90 group"
-          >
-            <ShoppingBasket className="w-5 h-5" />
-            <span className={cn(
-              "absolute top-1 right-1 w-4 h-4 bg-blue-600 text-white text-[9px] font-black rounded-full flex items-center justify-center transition-transform",
-              cart.length > 0 ? "scale-100" : "scale-0"
-            )}>
-              {cart.reduce((a, b) => a + b.quantity, 0)}
-            </span>
-          </button>
-          <button 
-            onClick={onAdminLogin}
-            className="p-2 text-slate-900 hover:text-blue-600 transition-colors active:scale-90"
-            title="Kelola Inventori"
-          >
-            <User className="w-5 h-5" />
-          </button>
-          <button 
-            className="lg:hidden p-2 text-slate-900"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X /> : <Menu />}
-          </button>
-        </div>
+        {/* Mobile Menu Overlay */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="fixed inset-x-0 top-[72px] bg-white z-[90] lg:hidden border-b border-slate-100 shadow-2xl p-6 flex flex-col gap-4"
+            >
+              {[
+                { name: 'Beranda', mode: 'home' },
+                { name: 'Katalog', mode: 'catalog' },
+                { name: 'Tentang Kami', mode: 'about' },
+                { name: 'Admin Login', mode: 'login' }
+              ].map((item) => (
+                <button 
+                  key={item.name} 
+                  onClick={() => {
+                    if (item.mode === 'login') {
+                      onAdminLogin();
+                    } else {
+                      setViewMode(item.mode as any);
+                      window.scrollTo(0, 0);
+                    }
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className={cn(
+                    "text-lg font-black uppercase tracking-widest py-4 border-b border-slate-50 text-left",
+                    (viewMode === item.mode) ? "text-blue-600" : "text-slate-900"
+                  )}
+                >
+                  {item.name}
+                </button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
       {/* Main Content */}
@@ -185,47 +225,48 @@ export const Storefront: React.FC<StorefrontProps> = ({ onAdminLogin }) => {
             transition={{ duration: 0.5 }}
           >
             {/* Hero Section V2 */}
-            <section className="relative min-h-[90vh] flex items-center pt-24 px-6 md:px-20 overflow-hidden bg-white">
-              <div className="absolute top-0 right-0 w-1/2 h-full bg-blue-600/5 -skew-x-12 translate-x-1/4 pointer-events-none" />
-              <div className="max-w-4xl relative z-10">
-                <motion.div
-                  initial={{ opacity: 0, x: -50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8 }}
-                  className="space-y-8"
-                >
-                  <span className="inline-block px-5 py-2 bg-blue-100 text-blue-700 text-[10px] font-black uppercase tracking-[0.3em] rounded-full">
-                    Authentic Wear 2024/25
-                  </span>
-                  <h1 className="text-6xl md:text-9xl font-black text-black leading-[0.85] tracking-tighter uppercase">
-                    Buktikan<br />
-                    <span className="text-blue-600 italic">Loyalitasmu.</span>
-                  </h1>
-                  <p className="text-slate-500 text-lg md:text-xl max-w-xl font-medium leading-relaxed">
-                    Jersey Sphere menyediakan koleksi jersey premium dengan detail yang presisi. 
-                    Dari lapangan hijau hingga gaya jalanan, bawa semangat tim kebanggaanmu kemana saja.
-                  </p>
-                  <div className="flex flex-wrap gap-5 pt-4">
-                    <button 
-                      onClick={() => setViewMode('catalog')}
-                      className="px-10 py-5 bg-black text-white font-black text-xs uppercase tracking-widest rounded-full hover:bg-blue-600 hover:shadow-2xl hover:shadow-blue-600/30 transition-all flex items-center gap-3 active:scale-95 group"
-                    >
-                      Belanja Sekarang
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </button>
-                    <button 
-                      onClick={() => setViewMode('catalog')}
-                      className="px-10 py-5 bg-white border-2 border-slate-100 text-black font-black text-xs uppercase tracking-widest rounded-full hover:border-black transition-all active:scale-95"
-                    >
-                      Koleksi Terbaru
-                    </button>
-                  </div>
-                </motion.div>
-              </div>
+            <section className="relative min-h-[90vh] flex items-center pt-32 pb-16 px-6 md:px-20 overflow-hidden bg-white">
+              <div className="max-w-7xl mx-auto w-full flex flex-col lg:flex-row items-center gap-16">
+                <div className="absolute top-0 right-0 w-1/2 h-full bg-blue-600/5 -skew-x-12 translate-x-1/4 pointer-events-none hidden lg:block" />
+                <div className="flex-1 relative z-10 text-center lg:text-left">
+                  <motion.div
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.8 }}
+                    className="space-y-6 md:space-y-8"
+                  >
+                    <span className="inline-block px-5 py-2 bg-blue-100 text-blue-700 text-[10px] font-black uppercase tracking-[0.3em] rounded-full">
+                      Authentic Wear 2024/25
+                    </span>
+                    <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-9xl font-black text-black leading-none tracking-tighter uppercase whitespace-pre-line sm:whitespace-normal">
+                      Buktikan<br className="hidden sm:block" />
+                      <span className="text-blue-600 italic">Loyalitasmu.</span>
+                    </h1>
+                    <p className="text-slate-500 text-base md:text-xl max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed">
+                      Jersey Sphere menyediakan koleksi jersey premium dengan detail yang presisi. 
+                      Dari lapangan hijau hingga gaya jalanan.
+                    </p>
+                    <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 md:gap-5 pt-4">
+                      <button 
+                        onClick={() => setViewMode('catalog')}
+                        className="w-full sm:w-auto px-10 py-5 bg-black text-white font-black text-xs uppercase tracking-widest rounded-full hover:bg-blue-600 hover:shadow-2xl hover:shadow-blue-600/30 transition-all flex items-center justify-center gap-3 active:scale-95 group"
+                      >
+                        Belanja Sekarang
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </button>
+                      <button 
+                        onClick={() => setViewMode('catalog')}
+                        className="w-full sm:w-auto px-10 py-5 bg-white border-2 border-slate-100 text-black font-black text-xs uppercase tracking-widest rounded-full hover:border-black transition-all active:scale-95 text-center"
+                      >
+                        Koleksi Terbaru
+                      </button>
+                    </div>
+                  </motion.div>
+                </div>
 
-              {/* Decorative Floating Jersey & Background Elements */}
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 lg:w-1/2 h-full hidden lg:flex items-center justify-center pointer-events-none pr-12">
-                <div className="relative w-full h-full flex items-center justify-center">
+                {/* Decorative Floating Jersey */}
+                <div className="flex-1 relative z-10 w-full max-w-lg lg:max-w-none flex items-center justify-center pointer-events-none">
+                  <div className="relative w-full aspect-[4/5] sm:aspect-[3/4] flex items-center justify-center">
                   {/* Floating Jersey Card */}
                   <motion.div 
                     initial={{ opacity: 0, scale: 0.8, rotate: -15, y: 50 }}
@@ -285,7 +326,8 @@ export const Storefront: React.FC<StorefrontProps> = ({ onAdminLogin }) => {
                   />
                 </div>
               </div>
-            </section>
+            </div>
+          </section>
 
             {/* Stats Section */}
             <section className="py-24 bg-white border-y border-slate-50">
@@ -405,7 +447,7 @@ export const Storefront: React.FC<StorefrontProps> = ({ onAdminLogin }) => {
               </div>
 
               {/* Catalog Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 w-full">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 sm:gap-8 w-full">
                 {filteredProducts.map((product) => (
                   <motion.div 
                     layout
@@ -629,31 +671,30 @@ export const Storefront: React.FC<StorefrontProps> = ({ onAdminLogin }) => {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="fixed inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-5xl md:h-[80vh] bg-white z-[300] shadow-2xl rounded-[40px] overflow-hidden flex flex-col md:flex-row"
+              className="fixed inset-2 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-5xl md:h-[80vh] bg-white z-[300] shadow-2xl rounded-[30px] md:rounded-[40px] overflow-hidden flex flex-col md:flex-row"
             >
               <button 
                 onClick={() => setSelectedProduct(null)}
-                className="absolute top-6 right-6 z-10 p-2 bg-slate-100 rounded-full hover:scale-110 transition-all"
+                className="absolute top-4 right-4 md:top-6 md:right-6 z-[310] p-2 bg-white/80 backdrop-blur shadow-sm rounded-full hover:scale-110 transition-all"
               >
                 <X className="w-5 h-5" />
               </button>
 
-              <div className="w-full md:w-1/2 bg-slate-50 relative">
+              <div className="w-full h-64 md:h-auto md:w-1/2 bg-slate-50 relative shrink-0">
                 <img src={selectedProduct.images?.[activeImageIdx]} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
               </div>
 
-              <div className="flex-1 p-12 overflow-y-auto space-y-8 flex flex-col">
-                <div className="space-y-4">
+              <div className="flex-1 p-6 md:p-12 overflow-y-auto space-y-6 md:space-y-8 flex flex-col">
+                <div className="space-y-2 md:space-y-4">
                   <span className="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em]">{selectedProduct.category}</span>
-                  <h3 className="text-4xl font-black uppercase tracking-tighter">{selectedProduct.name}</h3>
-                  <p className="text-3xl font-black">{formatCurrency(selectedProduct.price)}</p>
+                  <h3 className="text-2xl md:text-4xl font-black uppercase tracking-tighter">{selectedProduct.name}</h3>
+                  <p className="text-2xl md:text-3xl font-black">{formatCurrency(selectedProduct.price)}</p>
                 </div>
 
-                <div className="space-y-8 flex-1">
+                <div className="space-y-6 md:space-y-8 flex-1">
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
                       <h5 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Pilih Ukuran</h5>
-                      <span className="text-[9px] font-black text-blue-600 uppercase underline underline-offset-4 decoration-blue-600/20 cursor-pointer">Panduan Ukuran</span>
                     </div>
                     <div className="flex flex-wrap gap-2">
                        {Object.entries(selectedProduct.stocks || {}).map(([size, qty]) => (
@@ -662,7 +703,7 @@ export const Storefront: React.FC<StorefrontProps> = ({ onAdminLogin }) => {
                           disabled={(qty as number) <= 0}
                           onClick={() => setSelectedSize(size)}
                           className={cn(
-                            "min-w-14 h-14 rounded-2xl text-[11px] font-black transition-all border-2 flex flex-col items-center justify-center",
+                            "min-w-[50px] md:min-w-14 h-12 md:h-14 rounded-xl md:rounded-2xl text-[10px] md:text-[11px] font-black transition-all border-2 flex flex-col items-center justify-center",
                             (qty as number) <= 0 
                               ? "bg-slate-50 text-slate-200 border-slate-100 opacity-50 cursor-not-allowed" 
                               : selectedSize === size 
@@ -671,21 +712,17 @@ export const Storefront: React.FC<StorefrontProps> = ({ onAdminLogin }) => {
                           )}
                          >
                            <span>{size}</span>
-                           {(qty as number) > 0 && (qty as number) < 5 && (
-                             <span className="text-[8px] opacity-70 mt-1">Sisa {qty}</span>
-                           )}
                          </button>
                        ))}
                     </div>
                   </div>
 
-                  {/* Product Description Section - ADDED HERE */}
                   <div className="space-y-3 pt-4 border-t border-slate-50">
-                    <h5 className="text-[10px] font-black uppercase tracking-widest text-slate-900">Deskripsi Produk</h5>
+                    <h5 className="text-[10px] font-black uppercase tracking-widest text-slate-900">Deskripsi</h5>
                     <div className="prose prose-slate prose-sm font-medium text-slate-500 leading-relaxed italic">
-                      <p>
+                      <p className="line-clamp-4 md:line-clamp-none">
                         {selectedProduct.description || 
-                          `Jersey ${selectedProduct.name} edisi player/fan version. Menggunakan teknologi material terbaru untuk sirkulasi udara maksimal. Cocok untuk koleksi maupun digunakan saat pertandingan. Setiap pembelian termasuk jaminan originalitas dan packaging premium.`
+                          `Jersey ${selectedProduct.name} edisi player/fan version. Menggunakan teknologi material terbaru untuk sirkulasi udara maksimal.`
                         }
                       </p>
                     </div>
@@ -695,7 +732,7 @@ export const Storefront: React.FC<StorefrontProps> = ({ onAdminLogin }) => {
                 <button 
                   disabled={!selectedSize}
                   onClick={() => addToCart(selectedProduct, selectedSize)}
-                  className="w-full bg-black text-white font-black py-5 rounded-[2rem] text-xs uppercase tracking-widest shadow-xl hover:bg-blue-600 transition-all disabled:opacity-50 flex items-center justify-center gap-3"
+                  className="w-full bg-black text-white font-black py-4 md:py-5 rounded-2xl md:rounded-[2rem] text-[11px] md:text-xs uppercase tracking-widest shadow-xl hover:bg-blue-600 transition-all disabled:opacity-50 flex items-center justify-center gap-3 mt-auto"
                 >
                   <ShoppingBag className="w-4 h-4" />
                   <span>Masukkan Keranjang</span>

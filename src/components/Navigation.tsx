@@ -24,6 +24,8 @@ interface SidebarProps {
   collapsed: boolean;
   setCollapsed: (v: boolean) => void;
   onLogout: () => void;
+  isOpen: boolean;
+  setIsOpen: (v: boolean) => void;
 }
 
 const menuItems = [
@@ -37,15 +39,35 @@ const menuItems = [
   { id: 'logs', label: 'Log Sistem', icon: FileText },
 ];
 
-export const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, collapsed, setCollapsed, onLogout }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, collapsed, setCollapsed, onLogout, isOpen, setIsOpen }) => {
   return (
-    <motion.aside
-      initial={false}
-      animate={{ width: collapsed ? 80 : 280 }}
-      className="fixed left-0 top-0 h-full bg-slate-950 text-white z-50 flex flex-col transition-all duration-300 ease-in-out border-r border-slate-800 shadow-2xl"
-    >
-      <div className="p-6 flex items-center justify-between mb-8">
-        {!collapsed && (
+    <>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsOpen(false)}
+            className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-[55] md:hidden"
+          />
+        )}
+      </AnimatePresence>
+
+      <motion.aside
+        initial={{ x: -280 }}
+        animate={{ 
+          width: collapsed ? 80 : 280,
+          x: (isOpen || window.innerWidth >= 768) ? 0 : -280
+        }}
+        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+        className={cn(
+          "fixed left-0 top-0 h-full bg-slate-950 text-white z-[60] flex flex-col border-r border-slate-800 shadow-2xl transition-all",
+          !isOpen && "hidden md:flex"
+        )}
+      >
+        <div className="p-6 flex items-center justify-between mb-8">
+          {(!collapsed || isOpen) && (
           <motion.div 
             initial={{ opacity: 0 }} 
             animate={{ opacity: 1 }}
@@ -61,13 +83,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, col
           </motion.div>
         )}
         <button 
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={isOpen ? () => setIsOpen(false) : () => setCollapsed(!collapsed)}
           className={cn(
             "p-2 rounded-lg hover:bg-slate-800 transition-colors text-slate-400 hover:text-white",
-            collapsed && "mx-auto"
+            collapsed && !isOpen && "mx-auto"
           )}
         >
-          <ChevronLeft className={cn("w-5 h-5 transition-transform duration-300", collapsed && "rotate-180")} />
+          {isOpen ? <ChevronLeft /> : <ChevronLeft className={cn("w-5 h-5 transition-transform duration-300", collapsed && "rotate-180")} />}
         </button>
       </div>
 
@@ -124,45 +146,55 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, col
         </button>
       </div>
     </motion.aside>
+    </>
   );
 };
 
 export const Header: React.FC<{ 
   activeViewLabel: string, 
   onQuickEntry?: () => void,
-  onViewStore?: () => void
-}> = ({ activeViewLabel, onQuickEntry, onViewStore }) => {
+  onViewStore?: () => void,
+  onToggleMobileMenu?: () => void
+}> = ({ activeViewLabel, onQuickEntry, onViewStore, onToggleMobileMenu }) => {
   return (
-    <header className="h-20 border-b border-slate-200 bg-white/80 backdrop-blur-sm sticky top-0 z-40 px-8 flex items-center justify-between shadow-sm">
-      <div>
-        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">{activeViewLabel}</h2>
-        <p className="text-sm text-slate-500 font-medium">Selamat datang kembali, Ahmad.</p>
-      </div>
-
+    <header className="h-20 border-b border-slate-200 bg-white/80 backdrop-blur-sm sticky top-0 z-40 px-4 md:px-8 flex items-center justify-between shadow-sm">
       <div className="flex items-center gap-4">
         <button 
+          onClick={onToggleMobileMenu}
+          className="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+        >
+          <LayoutDashboard className="w-6 h-6" />
+        </button>
+        <div className="hidden sm:block">
+          <h2 className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight truncate">{activeViewLabel}</h2>
+          <p className="text-xs md:text-sm text-slate-500 font-medium">Selamat datang kembali, Ahmad.</p>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2 md:gap-4">
+        <button 
           onClick={onViewStore}
-          className="flex items-center gap-2 text-slate-600 hover:text-accent font-bold text-sm px-4 py-2.5 rounded-xl transition-all"
+          className="flex items-center gap-2 text-slate-600 hover:text-accent font-bold text-xs md:text-sm px-3 md:px-4 py-2.5 rounded-xl transition-all"
         >
           <Globe className="w-4 h-4" />
-          <span>Kunjungi Situs</span>
+          <span className="hidden sm:inline">Toko</span>
         </button>
-        <div className="h-6 w-px bg-slate-200" />
-        <div className="relative group hidden md:block">
+        <div className="h-6 w-px bg-slate-200 hidden md:block" />
+        <div className="relative group hidden lg:block">
           <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-accent transition-colors" />
           <input 
             type="text" 
-            placeholder="Cari apa saja..." 
-            className="pl-10 pr-4 py-2.5 bg-slate-100 border-transparent focus:bg-white focus:ring-2 focus:ring-accent/20 focus:border-accent w-64 rounded-xl text-sm transition-all"
+            placeholder="Search..." 
+            className="pl-10 pr-4 py-2.5 bg-slate-100 border-transparent focus:bg-white focus:ring-2 focus:ring-accent/20 focus:border-accent w-48 xl:w-64 rounded-xl text-sm transition-all"
           />
         </div>
 
         <button 
           onClick={onQuickEntry}
-          className="flex items-center gap-2 bg-accent hover:bg-accent/90 text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-accent/20 active:scale-95"
+          className="flex items-center gap-2 bg-accent hover:bg-accent/90 text-white px-4 md:px-5 py-2.5 rounded-xl font-semibold text-xs md:text-sm transition-all shadow-lg shadow-accent/20 active:scale-95"
         >
           <Plus className="w-4 h-4" />
-          <span>Entri Cepat</span>
+          <span className="hidden xs:inline">Entri</span>
         </button>
       </div>
     </header>

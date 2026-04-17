@@ -18,6 +18,7 @@ import { SettingsView, ReportView } from './components/SettingsAndReports';
 import { Login } from './components/Login';
 import { Storefront } from './components/Storefront';
 import { seedDatabase } from './lib/db';
+import { cn } from './lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
 
 type ViewType = 'dashboard' | 'products' | 'pos' | 'history' | 'report' | 'settings' | 'logs' | 'storefront' | 'login';
@@ -44,6 +45,8 @@ export default function App() {
     setActiveView('dashboard');
   };
 
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
   const handleLogout = () => {
     if (confirm('Yakin ingin logout dari sistem?')) {
       setIsAuthenticated(false);
@@ -69,7 +72,7 @@ export default function App() {
     const labels: Record<ViewType, string> = {
       dashboard: 'Dashboard Admin',
       products: 'Manajemen Produk',
-      pos: 'Point of Sale (Kasir)',
+      pos: 'Kasir / PoS',
       history: 'Riwayat Transaksi',
       report: 'Laporan Penjualan',
       settings: 'Pengaturan Toko',
@@ -108,23 +111,29 @@ export default function App() {
     <div className="min-h-screen bg-[#f8fafc] flex">
       <Sidebar 
         activeView={activeView} 
-        setActiveView={setActiveView} 
+        setActiveView={(view) => {
+          setActiveView(view);
+          setIsMobileSidebarOpen(false);
+        }} 
         collapsed={collapsed} 
         setCollapsed={setCollapsed}
         onLogout={handleLogout}
+        isOpen={isMobileSidebarOpen}
+        setIsOpen={setIsMobileSidebarOpen}
       />
       
-      <main 
-        className="flex-1 transition-all duration-300 ease-in-out"
-        style={{ marginLeft: collapsed ? 80 : 280 }}
-      >
+      <main className={cn(
+        "flex-1 transition-all duration-300 ease-in-out min-w-0",
+        collapsed ? "md:ml-20" : "md:ml-[280px]"
+      )}>
         <Header 
           activeViewLabel={getActiveLabel()} 
           onQuickEntry={() => setActiveView('products')}
           onViewStore={() => setActiveView('storefront')}
+          onToggleMobileMenu={() => setIsMobileSidebarOpen(true)}
         />
         
-        <div className="relative">
+        <div className="p-4 md:p-8 relative">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeView}

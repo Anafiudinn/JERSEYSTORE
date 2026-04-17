@@ -170,13 +170,13 @@ export const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onS
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4">
       <motion.div 
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="bg-white rounded-[32px] shadow-2xl w-full max-w-2xl overflow-hidden"
+        className="bg-white rounded-[32px] shadow-2xl w-full max-w-2xl max-h-[95vh] overflow-y-auto custom-scrollbar"
       >
-        <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <div className="p-6 md:p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 sticky top-0 z-10 backdrop-blur-md">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center text-white">
               <Package className="w-5 h-5" />
@@ -193,7 +193,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onS
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form onSubmit={handleSubmit} className="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           <div className="space-y-2">
             <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1 italic">Nama Jersey</label>
             <div className="relative">
