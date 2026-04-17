@@ -136,7 +136,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onS
               <h3 className="text-xl font-black text-slate-900 tracking-tight">
                 {productToEdit ? 'Edit Jersey' : 'Tambah Jersey Baru'}
               </h3>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Product Information</p>
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Informasi Produk</p>
             </div>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-slate-200 rounded-lg transition-colors">
@@ -198,7 +198,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onS
 
           <div className="md:col-span-2 space-y-4">
             <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1 italic flex items-center gap-2">
-              <Package className="w-3 h-3" /> Inventory by Size
+              <Package className="w-3 h-3" /> Inventori Berdasarkan Ukuran
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-slate-50 p-6 rounded-3xl border border-slate-100">
               {['S', 'M', 'L', 'XL', 'XXL'].map((sz) => (
@@ -277,13 +277,13 @@ export const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, onS
               onClick={onClose}
               className="px-6 py-3 bg-slate-100 text-slate-600 rounded-xl font-bold text-sm hover:bg-slate-200 transition-all"
             >
-              Cancel
+              Batal
             </button>
             <button 
               type="submit"
               className="px-8 py-3 bg-accent text-white rounded-xl font-black text-sm shadow-xl shadow-accent/20 hover:scale-105 active:scale-95 transition-all"
             >
-              {productToEdit ? 'Update Product' : 'Create Product'}
+              {productToEdit ? 'Perbarui Produk' : 'Simpan Produk'}
             </button>
           </div>
         </form>

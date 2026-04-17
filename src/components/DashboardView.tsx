@@ -24,10 +24,10 @@ import { formatCurrency, cn } from '../lib/utils';
 import { motion } from 'motion/react';
 
 const stats = [
-  { label: 'Total Sales', value: 124500000, icon: DollarSign, trend: '+12.5%', isUp: true },
-  { label: 'Total Orders', value: 156, icon: TrendingUp, trend: '+5.4%', isUp: true },
-  { label: 'Customers', value: 89, icon: Users, trend: '-2.1%', isUp: false },
-  { label: 'Inventory', value: 432, icon: Package, trend: '+0.8%', isUp: true },
+  { label: 'Total Penjualan', value: 124500000, icon: DollarSign, trend: '+12.5%', isUp: true },
+  { label: 'Total Pesanan', value: 156, icon: TrendingUp, trend: '+5.4%', isUp: true },
+  { label: 'Pelanggan', value: 89, icon: Users, trend: '-2.1%', isUp: false },
+  { label: 'Inventori', value: 432, icon: Package, trend: '+0.8%', isUp: true },
 ];
 
 const chartData = [
@@ -84,12 +84,12 @@ export const DashboardView: React.FC = () => {
         <div className="lg:col-span-2 bg-white p-8 rounded-[32px] border border-slate-200 shadow-sm">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h3 className="text-xl font-bold text-slate-900">Revenue Performance</h3>
+              <h3 className="text-xl font-bold text-slate-900">Performa Pendapatan</h3>
               <p className="text-sm text-slate-500 font-medium">Laporan penjualan dalam seminggu terakhir</p>
             </div>
             <select className="bg-slate-50 border-none rounded-xl px-4 py-2 text-sm font-semibold text-slate-600 focus:ring-2 focus:ring-accent/20">
-              <option>Last 7 Days</option>
-              <option>Last 30 Days</option>
+              <option>7 Hari Terakhir</option>
+              <option>30 Hari Terakhir</option>
             </select>
           </div>
           <div className="h-[350px] w-full">
@@ -117,7 +117,7 @@ export const DashboardView: React.FC = () => {
                 />
                 <Tooltip 
                   contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', padding: '12px' }}
-                  formatter={(val: number) => [formatCurrency(val), 'Sales']}
+                  formatter={(val: number) => [formatCurrency(val), 'Penjualan']}
                 />
                 <Area 
                   type="monotone" 
@@ -148,7 +148,7 @@ export const DashboardView: React.FC = () => {
                   <p className="text-xs text-slate-500 font-medium">{product.category}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-slate-900 text-sm">{product.sales} sold</p>
+                  <p className="font-bold text-slate-900 text-sm">{product.sales} terjual</p>
                   <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Rp{product.price/1000}k</p>
                 </div>
               </div>

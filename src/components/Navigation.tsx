@@ -28,13 +28,13 @@ interface SidebarProps {
 
 const menuItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { id: 'storefront', label: 'View Storefront', icon: Globe },
+  { id: 'storefront', label: 'Buka Toko', icon: Globe },
   { id: 'products', label: 'Manajemen Produk', icon: Package },
   { id: 'pos', label: 'Kasir / PoS', icon: ShoppingCart },
   { id: 'history', label: 'Riwayat Transaksi', icon: History },
   { id: 'report', label: 'Laporan', icon: BarChart3 },
   { id: 'settings', label: 'Pengaturan Toko', icon: Settings },
-  { id: 'logs', label: 'System Log', icon: FileText },
+  { id: 'logs', label: 'Log Sistem', icon: FileText },
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, collapsed, setCollapsed, onLogout }) => {
@@ -56,7 +56,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, col
             </div>
             <div>
               <h1 className="font-bold text-lg tracking-tight leading-none text-white">JerseySphere</h1>
-              <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Admin Panel</span>
+              <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Panel Admin</span>
             </div>
           </motion.div>
         )}
@@ -120,7 +120,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, col
           )}
         >
           <LogOut className="w-5 h-5 group-hover:scale-110 transition-transform" />
-          {!collapsed && <span className="text-sm font-bold">Logout</span>}
+          {!collapsed && <span className="text-sm font-bold">Keluar</span>}
         </button>
       </div>
     </motion.aside>
@@ -145,14 +145,14 @@ export const Header: React.FC<{
           className="flex items-center gap-2 text-slate-600 hover:text-accent font-bold text-sm px-4 py-2.5 rounded-xl transition-all"
         >
           <Globe className="w-4 h-4" />
-          <span>View Site</span>
+          <span>Kunjungi Situs</span>
         </button>
         <div className="h-6 w-px bg-slate-200" />
         <div className="relative group hidden md:block">
           <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-accent transition-colors" />
           <input 
             type="text" 
-            placeholder="Search anything..." 
+            placeholder="Cari apa saja..." 
             className="pl-10 pr-4 py-2.5 bg-slate-100 border-transparent focus:bg-white focus:ring-2 focus:ring-accent/20 focus:border-accent w-64 rounded-xl text-sm transition-all"
           />
         </div>
@@ -162,7 +162,7 @@ export const Header: React.FC<{
           className="flex items-center gap-2 bg-accent hover:bg-accent/90 text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-accent/20 active:scale-95"
         >
           <Plus className="w-4 h-4" />
-          <span>Quick Entry</span>
+          <span>Entri Cepat</span>
         </button>
       </div>
     </header>

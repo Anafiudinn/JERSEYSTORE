@@ -48,7 +48,7 @@ export default function App() {
     if (confirm('Yakin ingin logout dari sistem?')) {
       setIsAuthenticated(false);
       localStorage.removeItem('isAuth');
-      setActiveView('storefront');
+      setActiveView('login');
     }
   };
 
@@ -67,14 +67,14 @@ export default function App() {
 
   const getActiveLabel = () => {
     const labels: Record<ViewType, string> = {
-      dashboard: 'Admin Dashboard',
+      dashboard: 'Dashboard Admin',
       products: 'Manajemen Produk',
-      pos: 'Point of Sale',
+      pos: 'Point of Sale (Kasir)',
       history: 'Riwayat Transaksi',
       report: 'Laporan Penjualan',
       settings: 'Pengaturan Toko',
-      logs: 'System Logs',
-      storefront: 'Storefront',
+      logs: 'Log Sistem',
+      storefront: 'Halaman Depan',
       login: 'Login'
     };
     return labels[activeView];
@@ -86,7 +86,7 @@ export default function App() {
         <div className="w-16 h-16 border-4 border-slate-800 border-t-accent rounded-full animate-spin" />
         <div className="text-center">
           <h1 className="text-white font-black text-2xl tracking-tight mb-2">JerseySphere</h1>
-          <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">Initializing Database...</p>
+          <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">Menyiapkan Database...</p>
         </div>
       </div>
     );
@@ -101,17 +101,7 @@ export default function App() {
   }
 
   if (activeView === 'login' && !isAuthenticated) {
-    return (
-      <div className="relative">
-        <button 
-          onClick={() => setActiveView('storefront')}
-          className="fixed top-8 left-8 z-[110] px-6 py-3 bg-white text-slate-900 rounded-full font-black text-xs uppercase tracking-widest shadow-xl border border-slate-100 hover:scale-105 transition-all"
-        >
-          ← Back to Store
-        </button>
-        <Login onLogin={handleLogin} />
-      </div>
-    );
+    return <Login onLogin={handleLogin} onBackToStore={() => setActiveView('storefront')} />;
   }
 
   return (
